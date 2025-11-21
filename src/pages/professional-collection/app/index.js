@@ -38,6 +38,7 @@ export default {
             currentCaseIndex: 0,
             previousPage: 'dashboard',
             aiInput: '',
+            activeAnalyticsModule: 'channels',
             chatMessages: [
                 {
                     sender: 'ai',
@@ -328,6 +329,21 @@ export default {
                 'low': 'text-green-400'
             };
             return classes[risk] || 'text-white';
+        },
+        showAdvancedModule(module) {
+            this.activeAnalyticsModule = module;
+        },
+        openNotifications() {
+            this.showNotification('Notifications', 'Opening notification settings...');
+        },
+        toggleDarkMode() {
+            this.showNotification('Dark Mode', 'Dark mode toggle feature coming soon');
+        },
+        handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                this.showNotification('Logout', 'Logging out...');
+                // In real app, this would handle actual logout
+            }
         }
     }
 };

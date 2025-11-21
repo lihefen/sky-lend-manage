@@ -569,6 +569,251 @@
             </div>
         </div>
 
+        <!-- Profile Page -->
+        <div v-show="currentPage === 'profile'" class="page">
+            <!-- Header -->
+            <div class="glass-card mx-4 mt-6 p-6">
+                <div class="text-center">
+                    <div class="w-20 h-20 gradient-primary rounded-full mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">
+                        JC
+                    </div>
+                    <h1 class="text-xl font-bold text-white">John Collector</h1>
+                    <p class="text-gray-400">Senior Collection Agent</p>
+                    <div class="flex justify-center gap-2 mt-3">
+                        <span class="status-badge ptp-valid">Level 3</span>
+                        <span class="status-badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">Top Performer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="mx-4 mt-6">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="glass-card p-4 text-center">
+                        <i class="fas fa-trophy text-yellow-400 text-2xl mb-2"></i>
+                        <div class="text-2xl font-bold text-white">156</div>
+                        <div class="text-xs text-gray-400">Total Wins</div>
+                    </div>
+                    <div class="glass-card p-4 text-center">
+                        <i class="fas fa-calendar-check text-green-400 text-2xl mb-2"></i>
+                        <div class="text-2xl font-bold text-white">342</div>
+                        <div class="text-xs text-gray-400">Days Active</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="mx-4 mt-6 mb-4">
+                <h2 class="text-lg font-semibold text-white mb-4">Settings</h2>
+                <div class="glass-card p-4">
+                    <div class="space-y-4">
+                        <button @click="openNotifications" class="w-full flex justify-between items-center py-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-bell text-gray-400 mr-3"></i>
+                                <span class="text-white">Notifications</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <div class="border-t border-gray-700"></div>
+                        <button @click="toggleDarkMode" class="w-full flex justify-between items-center py-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-moon text-gray-400 mr-3"></i>
+                                <span class="text-white">Dark Mode</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                        <div class="border-t border-gray-700"></div>
+                        <button @click="handleLogout" class="w-full flex justify-between items-center py-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-sign-out-alt text-gray-400 mr-3"></i>
+                                <span class="text-white">Logout</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Advanced Analytics Modules -->
+            <div class="mx-4 mb-4">
+                <div class="glass-card p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-white font-semibold">Deep Analytics</h3>
+                        <div class="flex gap-1">
+                            <button @click="showAdvancedModule('channels')" 
+                                    class="px-2 py-1 rounded text-xs"
+                                    :class="activeAnalyticsModule === 'channels' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'">
+                                Channels
+                            </button>
+                            <button @click="showAdvancedModule('timing')" 
+                                    class="px-2 py-1 rounded text-xs"
+                                    :class="activeAnalyticsModule === 'timing' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'">
+                                Timing
+                            </button>
+                            <button @click="showAdvancedModule('risk')" 
+                                    class="px-2 py-1 rounded text-xs"
+                                    :class="activeAnalyticsModule === 'risk' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'">
+                                Risk
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Channel Effectiveness Analysis -->
+                    <div v-show="activeAnalyticsModule === 'channels'" class="space-y-4">
+                        <div class="grid grid-cols-3 gap-3 text-center">
+                            <div class="bg-gradient-to-br from-blue-900 to-blue-700 bg-opacity-20 p-3 rounded-lg border border-blue-700 border-opacity-30">
+                                <i class="fas fa-phone text-blue-400 text-xl mb-2"></i>
+                                <div class="text-lg font-bold text-white">78%</div>
+                                <div class="text-xs text-gray-400">Call Success</div>
+                                <div class="text-xs text-green-400 mt-1">↑ 5.2%</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-900 to-green-700 bg-opacity-20 p-3 rounded-lg border border-green-700 border-opacity-30">
+                                <i class="fab fa-whatsapp text-green-400 text-xl mb-2"></i>
+                                <div class="text-lg font-bold text-white">65%</div>
+                                <div class="text-xs text-gray-400">WhatsApp Rate</div>
+                                <div class="text-xs text-green-400 mt-1">↑ 12.8%</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-900 to-purple-700 bg-opacity-20 p-3 rounded-lg border border-purple-700 border-opacity-30">
+                                <i class="fas fa-sms text-purple-400 text-xl mb-2"></i>
+                                <div class="text-lg font-bold text-white">42%</div>
+                                <div class="text-xs text-gray-400">SMS Response</div>
+                                <div class="text-xs text-yellow-400 mt-1">↓ 2.1%</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Channel Mix Optimization -->
+                        <div class="p-3 bg-blue-900 bg-opacity-20 rounded-lg">
+                            <div class="text-blue-300 text-sm font-semibold mb-2">AI Channel Recommendation</div>
+                            <div class="text-xs text-gray-300 space-y-1">
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone text-blue-400 mr-2"></i>
+                                    <span>Use calls for high-value cases (₦50K+)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fab fa-whatsapp text-green-400 mr-2"></i>
+                                    <span>WhatsApp best for 25-45 age group</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-sms text-purple-400 mr-2"></i>
+                                    <span>SMS effective for payment reminders</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timing Patterns Analysis -->
+                    <div v-show="activeAnalyticsModule === 'timing'" class="space-y-4">
+                        <!-- Hourly Performance Heatmap -->
+                        <div>
+                            <h4 class="text-white text-sm font-semibold mb-3">Hourly Success Rate Heatmap</h4>
+                            <div class="grid grid-cols-8 gap-1 text-xs">
+                                <div class="text-gray-400 text-center">Time</div>
+                                <div class="text-center">9AM</div>
+                                <div class="text-center">11AM</div>
+                                <div class="text-center">1PM</div>
+                                <div class="text-center">3PM</div>
+                                <div class="text-center">5PM</div>
+                                <div class="text-center">7PM</div>
+                                <div class="text-center">9PM</div>
+                                
+                                <div class="text-gray-400">Mon-Fri</div>
+                                <div class="h-6 bg-green-600 rounded opacity-50 text-center text-white">55%</div>
+                                <div class="h-6 bg-green-600 rounded opacity-70 text-center text-white">72%</div>
+                                <div class="h-6 bg-yellow-600 rounded opacity-60 text-center text-white">61%</div>
+                                <div class="h-6 bg-green-500 rounded opacity-90 text-center text-white font-bold">89%</div>
+                                <div class="h-6 bg-green-600 rounded opacity-80 text-center text-white">78%</div>
+                                <div class="h-6 bg-yellow-600 rounded opacity-70 text-center text-white">65%</div>
+                                <div class="h-6 bg-orange-600 rounded opacity-50 text-center text-white">42%</div>
+                                
+                                <div class="text-gray-400">Weekend</div>
+                                <div class="h-6 bg-orange-600 rounded opacity-40 text-center text-white">38%</div>
+                                <div class="h-6 bg-yellow-600 rounded opacity-50 text-center text-white">52%</div>
+                                <div class="h-6 bg-green-600 rounded opacity-60 text-center text-white">58%</div>
+                                <div class="h-6 bg-green-600 rounded opacity-75 text-center text-white">71%</div>
+                                <div class="h-6 bg-green-500 rounded opacity-95 text-center text-white font-bold">86%</div>
+                                <div class="h-6 bg-green-600 rounded opacity-85 text-center text-white">79%</div>
+                                <div class="h-6 bg-yellow-600 rounded opacity-60 text-center text-white">61%</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Optimal Timing Insights -->
+                        <div class="p-3 bg-green-900 bg-opacity-20 rounded-lg">
+                            <div class="text-green-300 text-sm font-semibold mb-2">Peak Performance Windows</div>
+                            <div class="text-xs text-gray-300 space-y-1">
+                                <div>🏆 Best: Weekdays 2-4 PM (89% success)</div>
+                                <div>🥈 Second: Weekdays 5-7 PM (78% success)</div>
+                                <div>🥉 Third: Weekend 5-7 PM (86% success)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Risk Analysis -->
+                    <div v-show="activeAnalyticsModule === 'risk'" class="space-y-4">
+                        <!-- Risk Segmentation -->
+                        <div>
+                            <h4 class="text-white text-sm font-semibold mb-3">Advanced Risk Segmentation</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center p-2 bg-red-900 bg-opacity-20 rounded-lg border-l-4 border-red-500">
+                                    <div class="flex-1">
+                                        <div class="text-red-400 text-sm font-semibold">Critical Risk</div>
+                                        <div class="text-xs text-gray-300">15 cases • ₦1.2M value • 90% loss probability</div>
+                                    </div>
+                                    <div class="text-red-400 font-bold">Action Required</div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-2 bg-orange-900 bg-opacity-20 rounded-lg border-l-4 border-orange-500">
+                                    <div class="flex-1">
+                                        <div class="text-orange-400 text-sm font-semibold">High Risk</div>
+                                        <div class="text-xs text-gray-300">28 cases • ₦2.8M value • 65% loss probability</div>
+                                    </div>
+                                    <div class="text-orange-400 font-bold">Monitor Closely</div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-2 bg-yellow-900 bg-opacity-20 rounded-lg border-l-4 border-yellow-500">
+                                    <div class="flex-1">
+                                        <div class="text-yellow-400 text-sm font-semibold">Medium Risk</div>
+                                        <div class="text-xs text-gray-300">45 cases • ₦3.5M value • 35% loss probability</div>
+                                    </div>
+                                    <div class="text-yellow-400 font-bold">Standard Process</div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center p-2 bg-green-900 bg-opacity-20 rounded-lg border-l-4 border-green-500">
+                                    <div class="flex-1">
+                                        <div class="text-green-400 text-sm font-semibold">Low Risk</div>
+                                        <div class="text-xs text-gray-300">62 cases • ₦4.2M value • 10% loss probability</div>
+                                    </div>
+                                    <div class="text-green-400 font-bold">Optimal Recovery</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Risk Mitigation Strategies -->
+                        <div class="p-3 bg-purple-900 bg-opacity-20 rounded-lg">
+                            <div class="text-purple-300 text-sm font-semibold mb-2">AI Risk Mitigation Strategies</div>
+                            <div class="text-xs text-gray-300 space-y-1">
+                                <div class="flex items-center">
+                                    <i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>
+                                    <span>Critical: Escalate to senior agents immediately</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-phone-alt text-orange-400 mr-2"></i>
+                                    <span>High: Multiple daily contacts + payment plans</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-calendar-check text-yellow-400 mr-2"></i>
+                                    <span>Medium: Structured PTP follow-ups</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-bolt text-green-400 mr-2"></i>
+                                    <span>Low: Standard collection workflow</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Floating Action Button -->
         <button @click="toggleQuickActions" class="floating-button">
             <i class="fas fa-bolt"></i>
