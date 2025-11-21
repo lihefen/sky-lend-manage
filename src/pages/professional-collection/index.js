@@ -3,7 +3,7 @@ import Vue from 'vue';
 // import { Button, Cell, NavBar, CellGroup, Toast,CountDown ,Field,DropdownMenu,DropdownItem,List} from 'vant';
 // import 'vant/lib/index.css';
 import App from './app/index.vue';
-// import 'assets/styles/tailwind.css'
+import 'assets/styles/tailwind.css'
 // new Vconsole();
 // 注册Vant组件
 // Vue.use(Button);
