@@ -1911,6 +1911,7 @@
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
+                    <!-- Call Actions -->
                     <button @click="quickCallLastCustomer" class="bg-green-600 text-white p-4 rounded-xl flex flex-col items-center action-button">
                         <i class="fas fa-phone text-2xl mb-2"></i>
                         <span class="text-sm">Call Last</span>
@@ -1919,6 +1920,8 @@
                         <i class="fas fa-th text-2xl mb-2"></i>
                         <span class="text-sm">Dialer</span>
                     </button>
+                    
+                    <!-- Message Actions -->
                     <button @click="quickWhatsAppTemplate" class="bg-green-700 text-white p-4 rounded-xl flex flex-col items-center action-button">
                         <i class="fas fa-whatsapp text-2xl mb-2"></i>
                         <span class="text-sm">WA Template</span>
@@ -1927,6 +1930,40 @@
                         <i class="fas fa-sms text-2xl mb-2"></i>
                         <span class="text-sm">SMS Template</span>
                     </button>
+                    
+                    <!-- Customer Actions -->
+                    <button @click="quickAddNote" class="bg-yellow-600 text-white p-4 rounded-xl flex flex-col items-center action-button">
+                        <i class="fas fa-sticky-note text-2xl mb-2"></i>
+                        <span class="text-sm">Quick Note</span>
+                    </button>
+                    <button @click="quickPTP" class="bg-orange-600 text-white p-4 rounded-xl flex flex-col items-center action-button">
+                        <i class="fas fa-calendar-check text-2xl mb-2"></i>
+                        <span class="text-sm">Add PTP</span>
+                    </button>
+                    
+                    <!-- Navigation Actions -->
+                    <button @click="quickNextCase" class="bg-indigo-600 text-white p-4 rounded-xl flex flex-col items-center action-button">
+                        <i class="fas fa-forward text-2xl mb-2"></i>
+                        <span class="text-sm">Next Case</span>
+                    </button>
+                    <button @click="quickDashboard" class="bg-cyan-600 text-white p-4 rounded-xl flex flex-col items-center action-button">
+                        <i class="fas fa-home text-2xl mb-2"></i>
+                        <span class="text-sm">Dashboard</span>
+                    </button>
+                </div>
+                
+                <!-- Recent Actions -->
+                <div class="mt-4 pt-4 border-t border-gray-700">
+                    <h4 class="text-sm font-semibold text-gray-400 mb-2">Recent Actions</h4>
+                    <div class="space-y-2">
+                        <div v-for="(action, index) in recentActions" :key="index" class="flex items-center justify-between p-2 bg-gray-800 bg-opacity-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i :class="action.icon + ' mr-2'" :style="{ color: action.iconColor }"></i>
+                                <span class="text-white text-sm">{{ action.text }}</span>
+                            </div>
+                            <span class="text-xs text-gray-400">{{ action.time }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

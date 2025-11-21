@@ -35,6 +35,10 @@ export default {
             showQuickActionsPanel: false,
             refreshing: false,
             currentCustomer: null,
+            recentActions: [
+                { icon: 'fas fa-phone', iconColor: '#34d399', text: 'Called Grace Johnson', time: '2 min ago' },
+                { icon: 'fas fa-whatsapp', iconColor: '#25d366', text: 'WhatsApp to Ahmed Bello', time: '15 min ago' }
+            ],
             currentCaseIndex: 0,
             previousPage: 'dashboard',
             aiInput: '',
@@ -538,6 +542,27 @@ export default {
         },
         quickSMSTemplate() {
             this.showNotification('SMS Template', 'Opening SMS templates...');
+            this.closeQuickActions();
+        },
+        quickAddNote() {
+            this.showNotification('Quick Note', 'Opening note editor...');
+            this.closeQuickActions();
+        },
+        quickPTP() {
+            this.showNotification('Add PTP', 'Opening PTP form...');
+            this.closeQuickActions();
+        },
+        quickNextCase() {
+            // Move to next case in queue
+            if (this.queueData && this.queueData.length > 0) {
+                this.currentCaseIndex = (this.currentCaseIndex + 1) % this.queueData.length;
+                this.currentCustomer = this.queueData[this.currentCaseIndex];
+                this.showNotification('Next Case', `Switched to ${this.currentCustomer.name}`);
+            }
+            this.closeQuickActions();
+        },
+        quickDashboard() {
+            this.currentPage = 'dashboard';
             this.closeQuickActions();
         },
         sendAIMessage() {
