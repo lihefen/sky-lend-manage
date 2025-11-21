@@ -5,7 +5,7 @@ module.exports = {
       autoprefixer: {},
       'postcss-px-to-viewport': {
         unitToConvert: 'px',
-        viewportWidth: 750,
+        viewportWidth: 375,
         exclude: [/node_modules\/vant/],
         unitPrecision: 5,
         propList: ['*'],
@@ -18,7 +18,7 @@ module.exports = {
         include: /\/src\//,
         landscape: false,
         landscapeUnit: 'vw',
-        landscapeWidth: 1125,
+        landscapeWidth: 667,
       }
     }
   };
