@@ -39,6 +39,127 @@ export default {
             previousPage: 'dashboard',
             aiInput: '',
             activeAnalyticsModule: 'channels',
+            showDetailedMetrics: false,
+            selectedDateRange: 'today',
+            currentChartView: 'week',
+            currentChartType: 'bar',
+            showDPDHeatmap: false,
+            teamView: 'ranking',
+            dateRanges: [
+                { key: 'today', label: 'Today' },
+                { key: 'week', label: 'Week' },
+                { key: 'month', label: 'Month' },
+                { key: 'custom', label: 'Custom' }
+            ],
+            chartViews: [
+                { key: 'week', label: 'Week' },
+                { key: 'month', label: 'Month' },
+                { key: 'quarter', label: 'Quarter' }
+            ],
+            chartTypes: [
+                { key: 'bar', icon: 'fas fa-chart-bar' },
+                { key: 'line', icon: 'fas fa-chart-line' },
+                { key: 'area', icon: 'fas fa-chart-area' }
+            ],
+            chartData: [
+                { label: 'Mon', amount: '₦2.1M', change: 12, targetHeight: 70, collectedHeight: 65, predictionHeight: 5, isToday: false, isPredicted: false },
+                { label: 'Tue', amount: '₦2.6M', change: 18, targetHeight: 85, collectedHeight: 82, predictionHeight: 5, isToday: false, isPredicted: false },
+                { label: 'Wed', amount: '₦1.8M', change: -8, targetHeight: 60, collectedHeight: 55, predictionHeight: 5, isToday: false, isPredicted: false },
+                { label: 'Thu', amount: '₦2.9M', change: 15, targetHeight: 90, collectedHeight: 88, predictionHeight: 8, isToday: true, isPredicted: false },
+                { label: 'Fri', amount: '₦2.4M', change: 0, targetHeight: 75, collectedHeight: 70, predictionHeight: 5, isToday: false, isPredicted: true },
+                { label: 'Sat', amount: '₦3.1M', change: 0, targetHeight: 95, collectedHeight: 92, predictionHeight: 5, isToday: false, isPredicted: true },
+                { label: 'Sun', amount: '₦2.8M', change: 0, targetHeight: 88, collectedHeight: 85, predictionHeight: 5, isToday: false, isPredicted: true }
+            ],
+            heatmapData: [
+                { class: 'bg-green-600', opacity: 0.4, title: '0-30 Days: 45 cases' },
+                { class: 'bg-green-600', opacity: 0.6, title: '0-30 Days: 52 cases' },
+                { class: 'bg-yellow-600', opacity: 0.5, title: '31-60 Days: 28 cases' },
+                { class: 'bg-green-600', opacity: 0.4, title: '0-30 Days: 41 cases' },
+                { class: 'bg-yellow-600', opacity: 0.7, title: '31-60 Days: 35 cases' },
+                { class: 'bg-red-600', opacity: 0.8, title: '61+ Days: 18 cases' },
+                { class: 'bg-yellow-600', opacity: 0.6, title: '31-60 Days: 30 cases' },
+                { class: 'bg-green-600', opacity: 0.5, title: '0-30 Days: 48 cases' },
+                { class: 'bg-green-600', opacity: 0.45, title: '0-30 Days: 43 cases' },
+                { class: 'bg-yellow-600', opacity: 0.65, title: '31-60 Days: 32 cases' },
+                { class: 'bg-red-600', opacity: 0.9, title: '61+ Days: 25 cases' },
+                { class: 'bg-yellow-600', opacity: 0.55, title: '31-60 Days: 29 cases' },
+                { class: 'bg-red-600', opacity: 0.85, title: '61+ Days: 22 cases' },
+                { class: 'bg-green-600', opacity: 0.6, title: '0-30 Days: 55 cases' },
+                { class: 'bg-yellow-600', opacity: 0.7, title: '31-60 Days: 36 cases' },
+                { class: 'bg-red-600', opacity: 0.95, title: '61+ Days: 28 cases' },
+                { class: 'bg-red-600', opacity: 0.75, title: '61+ Days: 20 cases' },
+                { class: 'bg-yellow-600', opacity: 0.5, title: '31-60 Days: 27 cases' },
+                { class: 'bg-green-600', opacity: 0.55, title: '0-30 Days: 46 cases' },
+                { class: 'bg-green-600', opacity: 0.65, title: '0-30 Days: 58 cases' },
+                { class: 'bg-yellow-600', opacity: 0.6, title: '31-60 Days: 31 cases' },
+                { class: 'bg-green-600', opacity: 0.7, title: '0-30 Days: 62 cases' },
+                { class: 'bg-green-600', opacity: 0.75, title: '0-30 Days: 67 cases' },
+                { class: 'bg-yellow-600', opacity: 0.45, title: '31-60 Days: 25 cases' },
+                { class: 'bg-red-600', opacity: 0.8, title: '61+ Days: 19 cases' },
+                { class: 'bg-yellow-600', opacity: 0.55, title: '31-60 Days: 28 cases' },
+                { class: 'bg-red-600', opacity: 0.7, title: '61+ Days: 16 cases' },
+                { class: 'bg-green-600', opacity: 0.8, title: '0-30 Days: 71 cases' }
+            ],
+            teamRankings: [
+                {
+                    rank: 1,
+                    name: 'Sarah Chen',
+                    stats: '₦185,000 collected • 42 cases',
+                    rate: 92,
+                    change: '↑ 3.2%',
+                    aiScore: 9.4,
+                    bgClass: 'bg-gradient-to-r from-yellow-900 to-yellow-700 bg-opacity-10 border-yellow-500',
+                    rankClass: 'gradient-warning',
+                    rateClass: 'text-yellow-400',
+                    changeClass: 'text-green-400',
+                    badges: [
+                        { icon: 'fas fa-fire', text: '7 day streak', class: 'text-green-400' },
+                        { icon: 'fas fa-chart-line', text: '+23% vs avg', class: 'text-blue-400' }
+                    ]
+                },
+                {
+                    rank: 2,
+                    name: 'You',
+                    stats: '₦168,000 collected • 38 cases',
+                    rate: 85,
+                    change: '↑ 5.1%',
+                    aiScore: 8.7,
+                    bgClass: 'bg-gradient-to-r from-blue-900 to-blue-700 bg-opacity-10 border-blue-500',
+                    rankClass: 'bg-blue-600',
+                    rateClass: 'text-blue-400',
+                    changeClass: 'text-green-400',
+                    badges: [
+                        { icon: 'fas fa-brain', text: 'AI optimized', class: 'text-purple-400' },
+                        { icon: 'fas fa-trending-up', text: 'Top performer', class: 'text-green-400' }
+                    ]
+                },
+                {
+                    rank: 3,
+                    name: 'Mike Okafor',
+                    stats: '₦152,000 collected • 35 cases',
+                    rate: 78,
+                    change: '↓ 1.2%',
+                    aiScore: 7.8,
+                    bgClass: '',
+                    rankClass: 'bg-orange-700',
+                    rateClass: 'text-orange-400',
+                    changeClass: 'text-red-400',
+                    badges: [
+                        { icon: 'fas fa-clock', text: 'Steady pace', class: 'text-yellow-400' },
+                        { icon: 'fas fa-minus', text: '0% change', class: 'text-gray-400' }
+                    ]
+                }
+            ],
+            bestTimeSlots: [
+                { time: '10-11 AM', success: '82%', colorClass: 'text-green-400' },
+                { time: '2-4 PM', success: '89%', colorClass: 'text-green-400' },
+                { time: '7-8 PM', success: '71%', colorClass: 'text-yellow-400' }
+            ],
+            channelEffectiveness: [
+                { name: 'Phone Call', rate: '78%', colorClass: 'text-green-400' },
+                { name: 'WhatsApp', rate: '65%', colorClass: 'text-blue-400' },
+                { name: 'SMS', rate: '42%', colorClass: 'text-yellow-400' }
+            ],
             chatMessages: [
                 {
                     sender: 'ai',
@@ -344,6 +465,47 @@ export default {
                 this.showNotification('Logout', 'Logging out...');
                 // In real app, this would handle actual logout
             }
+        },
+        showAIDetailedInsights() {
+            this.showNotification('AI Insights', 'Opening detailed AI insights...');
+        },
+        selectDateRange(range) {
+            this.selectedDateRange = range;
+            this.refreshAnalyticsData();
+        },
+        toggleMetricsView() {
+            this.showDetailedMetrics = !this.showDetailedMetrics;
+        },
+        showKPIDetails(kpi) {
+            this.showNotification('KPI Details', `Showing details for ${kpi}...`);
+        },
+        changeChartView(view) {
+            this.currentChartView = view;
+            // In real app, this would update chart data based on view
+        },
+        toggleChartType(type) {
+            this.currentChartType = type;
+            // In real app, this would change chart rendering
+        },
+        showDayDetails(day) {
+            this.showNotification('Day Details', `Showing details for ${day}...`);
+        },
+        toggleDPDView() {
+            this.showDPDHeatmap = !this.showDPDHeatmap;
+        },
+        refreshPredictions() {
+            this.showNotification('Predictions', 'Refreshing AI predictions...');
+            this.refreshing = true;
+            setTimeout(() => {
+                this.refreshing = false;
+                this.showNotification('Predictions Updated', 'AI predictions refreshed');
+            }, 2000);
+        },
+        showDetailedRecommendations() {
+            this.showNotification('Action Plan', 'Opening detailed action plan...');
+        },
+        toggleTeamView(view) {
+            this.teamView = view;
         }
     }
 };
