@@ -480,18 +480,17 @@ export default {
             
             // Update queue progress
             const totalCases = this.queueData.length;
-            this.queueProgress = `${this.currentCaseIndex + 1} of ${totalCases}`;
+            const queueProgress = `${this.currentCaseIndex + 1} of ${totalCases}`;
             
-            // Update loan info based on customer
-            this.loanInfo.loanAmount = item.amount;
-            this.outstandingDetails.outstandingAmount = item.amount;
-            this.outstandingDetails.dueAmount = item.amount;
-            this.outstandingDetails.totalDue = item.amount + this.outstandingDetails.penaltyFee;
+            // Store customer data in localStorage for the details page
+            const customerData = {
+                customer: item,
+                queueProgress: queueProgress
+            };
+            localStorage.setItem('currentCustomerDetail', JSON.stringify(customerData));
             
-            // Update payment info
-            this.paymentInfo.appLink = `https://skyloan.app/pay/${item.customerId}`;
-            
-            this.showPage('customer-detail');
+            // Navigate to professional-details page
+            navigateTo('professional-details');
         },
         backToPreviousPage() {
             this.showPage(this.previousPage);
