@@ -21,6 +21,7 @@
     "@tailwindcss/postcss": "^4.1.13",
     "axios": "^0.19.2",
     "core-js": "^3.30.2",
+    "font-awesome": "^4.7.0",
     "jsencrypt": "^3.5.4",
     "lucide-vue": "^0.517.0",
     "lucide-vue-next": "^0.542.0",

@@ -1,901 +1,439 @@
-import { navigateTo } from '@/utils';
-import { get } from 'lodash';
+/**
+ * @Description: Professional Collection Management System
+ * @version: 1.0.0
+ * @Author: hean
+ * @Date: 2025-07-22 11:00:33
+ * @LastEditors: hean
+ * @LastEditTime: 2025-11-01 12:18:30
+ */
 
-// Mock queue data
-const mockQueueData = [
-    // Today's Target - High Priority
-    { id: 1, name: "Grace Johnson", customerId: "NG456789", dpd: 89, amount: 85200, risk: "high", ptp: "broken", lastContact: "2 hours ago", contactAttempts: 8, ptpDate: "2025-02-15", assignedAgent: "John", phone: "0803-224-5531", state: "Lagos", aiScore: 9.2, recoveryProb: 85, bestContactTime: "2-4 PM", aiPriority: true },
-    { id: 2, name: "Ahmed Bello", customerId: "NG234567", dpd: 45, amount: 42800, risk: "medium", ptp: "valid", lastContact: "5 hours ago", contactAttempts: 3, ptpDate: "2025-02-20", assignedAgent: "Sarah", phone: "0802-915-6723", state: "Abuja", recoveryProb: 70 },
-    { id: 3, name: "Chioma Okoro", customerId: "NG345678", dpd: 12, amount: 15600, risk: "low", ptp: "valid", lastContact: "1 day ago", contactAttempts: 1, ptpDate: "2025-02-19", assignedAgent: "John", phone: "0801-456-7890", state: "Lagos", recoveryProb: 95 },
-    
-    // Severely Overdue
-    { id: 4, name: "Tunde Adekunle", customerId: "NG345678", dpd: 67, amount: 67800, risk: "high", ptp: "broken", lastContact: "3 days ago", contactAttempts: 12, ptpDate: "2025-02-10", assignedAgent: "Mike", phone: "0803-123-4567", state: "Lagos" },
-    { id: 5, name: "Michael Yusuf", customerId: "NG789012", dpd: 78, amount: 76500, risk: "high", ptp: "none", lastContact: "4 days ago", contactAttempts: 15, ptpDate: null, assignedAgent: "John", phone: "0804-234-5678", state: "Abuja" },
-    { id: 6, name: "Ruth Nwankwo", customerId: "NG678901", dpd: 92, amount: 54300, risk: "high", ptp: "broken", lastContact: "2 days ago", contactAttempts: 10, ptpDate: "2025-02-08", assignedAgent: "Peter", phone: "0805-345-6789", state: "Port Harcourt" },
-    
-    // PTP Confirmed
-    { id: 7, name: "Funke Adebayo", customerId: "NG901234", dpd: 12, amount: 8900, risk: "low", ptp: "valid", lastContact: "6 hours ago", contactAttempts: 2, ptpDate: "2025-02-19", assignedAgent: "John", phone: "0806-456-7890", state: "Lagos" },
-    { id: 8, name: "Samuel Okafor", customerId: "NG567890", dpd: 34, amount: 23400, risk: "medium", ptp: "valid", lastContact: "1 hour ago", contactAttempts: 4, ptpDate: "2025-02-18", assignedAgent: "Mike", phone: "0807-567-8901", state: "Kano" },
-    { id: 9, name: "Patience Eze", customerId: "NG890123", dpd: 29, amount: 19800, risk: "low", ptp: "valid", lastContact: "3 hours ago", contactAttempts: 3, ptpDate: "2025-02-20", assignedAgent: "Sarah", phone: "0808-678-9012", state: "Ibadan" },
-    
-    // New Cases
-    { id: 10, name: "Tola Adeyemi", customerId: "NG456790", dpd: 3, amount: 9800, risk: "low", ptp: "none", lastContact: "2 hours ago", contactAttempts: 0, ptpDate: null, assignedAgent: "Sarah", phone: "0809-789-0123", state: "Lagos" },
-    { id: 11, name: "Ibrahim Sule", customerId: "NG123457", dpd: 7, amount: 22300, risk: "low", ptp: "none", lastContact: "6 hours ago", contactAttempts: 2, ptpDate: null, assignedAgent: "Mike", phone: "0810-890-1234", state: "Abuja" },
-];
+/**********************
+ * MOCK QUEUE DATA
+ * TODO: 替换为后端 API
+ **********************/
+function generateMockQueue() {
+    const baseQueue = [
+        {
+            id: 'NG456789',
+            name: 'Grace Johnson',
+            phone: '0803-224-5531',
+            state: 'Lagos',
+            dpd: 89,
+            outstanding: 85200,
+            risk: 'high',
+            ptpStatus: 'broken',
+            ptpDate: null,
+            queue: 'all'
+        },
+        {
+            id: 'NG234567',
+            name: 'Ahmed Bello',
+            phone: '0802-915-6723',
+            state: 'Abuja',
+            dpd: 45,
+            outstanding: 42800,
+            risk: 'medium',
+            ptpStatus: 'valid',
+            ptpDate: todayISO(),
+            queue: 'ptpToday'
+        },
+        {
+            id: 'NG999001',
+            name: 'Chioma Okeke',
+            phone: '0812-334-1111',
+            state: 'Lagos',
+            dpd: 12,
+            outstanding: 32000,
+            risk: 'low',
+            ptpStatus: 'none',
+            ptpDate: null,
+            queue: 'all'
+        },
+        {
+            id: 'NG999002',
+            name: 'Ibrahim Musa',
+            phone: '0807-223-9988',
+            state: 'Kano',
+            dpd: 63,
+            outstanding: 112000,
+            risk: 'high',
+            ptpStatus: 'valid',
+            ptpDate: todayISO(),
+            queue: 'ptpToday'
+        },
+        {
+            id: 'NG999003',
+            name: 'Blessing Uche',
+            phone: '0809-778-2044',
+            state: 'Port Harcourt',
+            dpd: 31,
+            outstanding: 56000,
+            risk: 'medium',
+            ptpStatus: 'broken',
+            ptpDate: null,
+            queue: 'broken'
+        }
+    ];
+
+    // 生成更多 mock 数据，方便演示分页
+    const mockQueue = [...baseQueue];
+    for (let i = 0; i < 25; i++) {
+        mockQueue.push({
+            id: 'NGMOCK' + (100 + i),
+            name: 'Test User ' + (i + 1),
+            phone: '0800-000-' + String(1000 + i),
+            state: ['Lagos', 'Abuja', 'Kano', 'Ibadan'][i % 4],
+            dpd: 1 + (i * 3) % 90,
+            outstanding: 20000 + (i * 5000),
+            risk: ['low', 'medium', 'high'][i % 3],
+            ptpStatus: ['none', 'valid', 'broken'][i % 3],
+            ptpDate: i % 4 === 0 ? todayISO() : null,
+            queue: 'all'
+        });
+    }
+
+    return mockQueue;
+}
+
+/**********************
+ * UTILITIES
+ **********************/
+function todayISO() {
+    const d = new Date();
+    return d.toISOString().slice(0, 10);
+}
+
+function formatNaira(n) {
+    return '₦' + n.toLocaleString('en-NG');
+}
 
 export default {
     name: 'ProfessionalCollectionApp',
     data() {
         return {
-            currentPage: 'dashboard',
-            currentSort: 'amount',
-            currentFilter: 'today',
-            searchTerm: '',
-            showPerformanceDetails: false,
-            showQuickActionsPanel: false,
-            refreshing: false,
-            currentCustomer: null,
-            recentActions: [
-                { icon: 'fas fa-phone', iconColor: '#34d399', text: 'Called Grace Johnson', time: '2 min ago' },
-                { icon: 'fas fa-whatsapp', iconColor: '#25d366', text: 'WhatsApp to Ahmed Bello', time: '15 min ago' }
-            ],
-            currentCaseIndex: 0,
-            previousPage: 'dashboard',
+            // Page state
+            currentPageKey: 'dashboard',
+            currentQueueTab: 'all',
+            queuePageIndex: 0,
+            pageSize: 10,
+            filteredQueueCache: [],
+            currentDetailCustomerId: null,
+            autoRefreshTimer: null,
+            recordsByCustomer: {},
+
+            // Mock data
+            MOCK_QUEUE: generateMockQueue(),
+
+            // Filters
+            searchQuery: '',
+            filterRisk: '',
+            filterPTP: '',
+            filterAmount: '',
+
+            // AI
             aiInput: '',
-            activeAnalyticsModule: 'channels',
-            showDetailedMetrics: false,
-            selectedDateRange: 'today',
-            currentChartView: 'week',
-            currentChartType: 'bar',
-            showDPDHeatmap: false,
-            teamView: 'ranking',
-            dateRanges: [
-                { key: 'today', label: 'Today' },
-                { key: 'week', label: 'Week' },
-                { key: 'month', label: 'Month' },
-                { key: 'custom', label: 'Custom' }
+            aiMessages: [],
+
+            // Modal
+            showRecordModal: false,
+            recordForm: {
+                result: '',
+                amount: null,
+                nextDate: '',
+                note: ''
+            },
+
+            // Navigation
+            navItems: [
+                { key: 'dashboard', label: 'Home', icon: 'fa-solid fa-house' },
+                { key: 'queue', label: 'Queue', icon: 'fa-solid fa-list-check' },
+                { key: 'analytics', label: 'Analytics', icon: 'fa-solid fa-chart-line' },
+                { key: 'ai', label: 'AI', icon: 'fa-solid fa-robot' }
             ],
-            chartViews: [
-                { key: 'week', label: 'Week' },
-                { key: 'month', label: 'Month' },
-                { key: 'quarter', label: 'Quarter' }
-            ],
-            chartTypes: [
-                { key: 'bar', icon: 'fas fa-chart-bar' },
-                { key: 'line', icon: 'fas fa-chart-line' },
-                { key: 'area', icon: 'fas fa-chart-area' }
-            ],
-            chartData: [
-                { label: 'Mon', amount: '₦2.1M', change: 12, targetHeight: 70, collectedHeight: 65, predictionHeight: 5, isToday: false, isPredicted: false },
-                { label: 'Tue', amount: '₦2.6M', change: 18, targetHeight: 85, collectedHeight: 82, predictionHeight: 5, isToday: false, isPredicted: false },
-                { label: 'Wed', amount: '₦1.8M', change: -8, targetHeight: 60, collectedHeight: 55, predictionHeight: 5, isToday: false, isPredicted: false },
-                { label: 'Thu', amount: '₦2.9M', change: 15, targetHeight: 90, collectedHeight: 88, predictionHeight: 8, isToday: true, isPredicted: false },
-                { label: 'Fri', amount: '₦2.4M', change: 0, targetHeight: 75, collectedHeight: 70, predictionHeight: 5, isToday: false, isPredicted: true },
-                { label: 'Sat', amount: '₦3.1M', change: 0, targetHeight: 95, collectedHeight: 92, predictionHeight: 5, isToday: false, isPredicted: true },
-                { label: 'Sun', amount: '₦2.8M', change: 0, targetHeight: 88, collectedHeight: 85, predictionHeight: 5, isToday: false, isPredicted: true }
-            ],
-            heatmapData: [
-                { class: 'bg-green-600', opacity: 0.4, title: '0-30 Days: 45 cases' },
-                { class: 'bg-green-600', opacity: 0.6, title: '0-30 Days: 52 cases' },
-                { class: 'bg-yellow-600', opacity: 0.5, title: '31-60 Days: 28 cases' },
-                { class: 'bg-green-600', opacity: 0.4, title: '0-30 Days: 41 cases' },
-                { class: 'bg-yellow-600', opacity: 0.7, title: '31-60 Days: 35 cases' },
-                { class: 'bg-red-600', opacity: 0.8, title: '61+ Days: 18 cases' },
-                { class: 'bg-yellow-600', opacity: 0.6, title: '31-60 Days: 30 cases' },
-                { class: 'bg-green-600', opacity: 0.5, title: '0-30 Days: 48 cases' },
-                { class: 'bg-green-600', opacity: 0.45, title: '0-30 Days: 43 cases' },
-                { class: 'bg-yellow-600', opacity: 0.65, title: '31-60 Days: 32 cases' },
-                { class: 'bg-red-600', opacity: 0.9, title: '61+ Days: 25 cases' },
-                { class: 'bg-yellow-600', opacity: 0.55, title: '31-60 Days: 29 cases' },
-                { class: 'bg-red-600', opacity: 0.85, title: '61+ Days: 22 cases' },
-                { class: 'bg-green-600', opacity: 0.6, title: '0-30 Days: 55 cases' },
-                { class: 'bg-yellow-600', opacity: 0.7, title: '31-60 Days: 36 cases' },
-                { class: 'bg-red-600', opacity: 0.95, title: '61+ Days: 28 cases' },
-                { class: 'bg-red-600', opacity: 0.75, title: '61+ Days: 20 cases' },
-                { class: 'bg-yellow-600', opacity: 0.5, title: '31-60 Days: 27 cases' },
-                { class: 'bg-green-600', opacity: 0.55, title: '0-30 Days: 46 cases' },
-                { class: 'bg-green-600', opacity: 0.65, title: '0-30 Days: 58 cases' },
-                { class: 'bg-yellow-600', opacity: 0.6, title: '31-60 Days: 31 cases' },
-                { class: 'bg-green-600', opacity: 0.7, title: '0-30 Days: 62 cases' },
-                { class: 'bg-green-600', opacity: 0.75, title: '0-30 Days: 67 cases' },
-                { class: 'bg-yellow-600', opacity: 0.45, title: '31-60 Days: 25 cases' },
-                { class: 'bg-red-600', opacity: 0.8, title: '61+ Days: 19 cases' },
-                { class: 'bg-yellow-600', opacity: 0.55, title: '31-60 Days: 28 cases' },
-                { class: 'bg-red-600', opacity: 0.7, title: '61+ Days: 16 cases' },
-                { class: 'bg-green-600', opacity: 0.8, title: '0-30 Days: 71 cases' }
-            ],
-            teamRankings: [
-                {
-                    rank: 1,
-                    name: 'Sarah Chen',
-                    stats: '₦185,000 collected • 42 cases',
-                    rate: 92,
-                    change: '↑ 3.2%',
-                    aiScore: 9.4,
-                    bgClass: 'bg-gradient-to-r from-yellow-900 to-yellow-700 bg-opacity-10 border-yellow-500',
-                    rankClass: 'gradient-warning',
-                    rateClass: 'text-yellow-400',
-                    changeClass: 'text-green-400',
-                    badges: [
-                        { icon: 'fas fa-fire', text: '7 day streak', class: 'text-green-400' },
-                        { icon: 'fas fa-chart-line', text: '+23% vs avg', class: 'text-blue-400' }
-                    ]
-                },
-                {
-                    rank: 2,
-                    name: 'You',
-                    stats: '₦168,000 collected • 38 cases',
-                    rate: 85,
-                    change: '↑ 5.1%',
-                    aiScore: 8.7,
-                    bgClass: 'bg-gradient-to-r from-blue-900 to-blue-700 bg-opacity-10 border-blue-500',
-                    rankClass: 'bg-blue-600',
-                    rateClass: 'text-blue-400',
-                    changeClass: 'text-green-400',
-                    badges: [
-                        { icon: 'fas fa-brain', text: 'AI optimized', class: 'text-purple-400' },
-                        { icon: 'fas fa-trending-up', text: 'Top performer', class: 'text-green-400' }
-                    ]
-                },
-                {
-                    rank: 3,
-                    name: 'Mike Okafor',
-                    stats: '₦152,000 collected • 35 cases',
-                    rate: 78,
-                    change: '↓ 1.2%',
-                    aiScore: 7.8,
-                    bgClass: '',
-                    rankClass: 'bg-orange-700',
-                    rateClass: 'text-orange-400',
-                    changeClass: 'text-red-400',
-                    badges: [
-                        { icon: 'fas fa-clock', text: 'Steady pace', class: 'text-yellow-400' },
-                        { icon: 'fas fa-minus', text: '0% change', class: 'text-gray-400' }
-                    ]
-                }
-            ],
-            bestTimeSlots: [
-                { time: '10-11 AM', success: '82%', colorClass: 'text-green-400' },
-                { time: '2-4 PM', success: '89%', colorClass: 'text-green-400' },
-                { time: '7-8 PM', success: '71%', colorClass: 'text-yellow-400' }
-            ],
-            channelEffectiveness: [
-                { name: 'Phone Call', rate: '78%', colorClass: 'text-green-400' },
-                { name: 'WhatsApp', rate: '65%', colorClass: 'text-blue-400' },
-                { name: 'SMS', rate: '42%', colorClass: 'text-yellow-400' }
-            ],
-            chatMessages: [
-                {
-                    sender: 'ai',
-                    message: "Hello! I'm your AI collection assistant. I can help you with:\n\n• Payment negotiation strategies\n• Customer communication tips\n• Risk assessment\n• PTP follow-up timing\n\nWhat would you like help with today?"
-                }
-            ],
-            queueData: mockQueueData,
-            sortOptions: [
-                { key: 'amount', label: 'Amount', icon: 'fas fa-money-bill' },
-                { key: 'dpd', label: 'Days', icon: 'fas fa-clock' },
-                { key: 'contact', label: 'Contacts', icon: 'fas fa-phone' },
-                { key: 'risk', label: 'Risk', icon: 'fas fa-exclamation-triangle' }
-            ],
+
+            // Queue tabs
             queueTabs: [
-                { key: 'today', label: 'Target', count: 35 },
-                { key: 'overdue', label: 'Overdue', count: 28 },
-                { key: 'ptp', label: 'PTP', count: 22 },
-                { key: 'broken', label: 'Lost', count: 18 },
-                { key: 'new', label: 'New', count: 25 }
-            ],
-            navigationItems: [
-                { key: 'dashboard', label: 'Home', icon: 'fas fa-home' },
-                { key: 'queue', label: 'Queue', icon: 'fas fa-list' },
-                { key: 'analytics', label: 'Analytics', icon: 'fas fa-chart-line' },
-                { key: 'ai-assistant', label: 'AI', icon: 'fas fa-robot' },
-                { key: 'profile', label: 'Profile', icon: 'fas fa-user' }
-            ],
-            appStyle: {
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-                color: '#e2e8f0',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif',
-                maxWidth: '430px',
-                margin: 'auto',
-                overflowX: 'hidden',
-                minHeight: '100vh'
-            },
-            // Customer Detail Page Data
-            queueProgress: '1 of 10',
-            emergencyContacts: [
-                {
-                    name: 'Sarah Johnson',
-                    relationship: 'Spouse - Primary Contact',
-                    phone: '0802-345-6789',
-                    altPhone: '0801-234-5678',
-                    initial: 'S',
-                    bgClass: 'bg-red-900 bg-opacity-20 p-3 rounded-lg border border-red-700 border-opacity-30',
-                    avatarClass: 'w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2',
-                    details: 'Relationship: Spouse | Verified: Yes | Last contacted: 3 days ago'
-                },
-                {
-                    name: 'James Johnson',
-                    relationship: 'Brother - Secondary Contact',
-                    phone: '0803-456-7890',
-                    altPhone: '0802-345-6789',
-                    initial: 'J',
-                    bgClass: 'bg-yellow-900 bg-opacity-20 p-3 rounded-lg border border-yellow-700 border-opacity-30',
-                    avatarClass: 'w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2',
-                    details: 'Relationship: Brother | Verified: Yes | Last contacted: 1 week ago'
-                },
-                {
-                    name: 'Johnson & Sons Ltd',
-                    relationship: 'Workplace - Business Contact',
-                    phone: '0804-567-8901',
-                    altPhone: null,
-                    initial: 'W',
-                    bgClass: 'bg-blue-900 bg-opacity-20 p-3 rounded-lg border border-blue-700 border-opacity-30',
-                    avatarClass: 'w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2',
-                    details: 'Type: Business | Verified: Yes | Last contacted: 2 weeks ago'
-                }
-            ],
-            contactHistory: {
-                timesContacted: 8,
-                successful: 3,
-                daysSinceLast: 5
-            },
-            loanInfo: {
-                loanAmount: 45000,
-                disbursedDate: 'Jan 02, 2025',
-                dueDate: 'Jan 16, 2025',
-                tenure: '14 days'
-            },
-            collectionNotes: [
-                {
-                    timestamp: 'Today, 2:30 PM',
-                    agent: 'Agent John',
-                    content: 'Customer promised to pay by tomorrow but has broken previous PTP. High risk of default. Recommended for escalation.',
-                    borderClass: 'bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-cyan-400',
-                    badges: [
-                        { text: 'High Priority', class: 'status-badge bg-red-600 bg-opacity-20 text-red-400' },
-                        { text: 'PTP Broken', class: 'status-badge bg-yellow-600 bg-opacity-20 text-yellow-400' }
-                    ]
-                },
-                {
-                    timestamp: 'Yesterday, 4:15 PM',
-                    agent: 'Agent Sarah',
-                    content: 'Customer confirmed receiving loan but claims lost job. Willing to make partial payment of ₦20,000 this week.',
-                    borderClass: 'bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-blue-400',
-                    badges: [
-                        { text: 'Partial Payment', class: 'status-badge bg-yellow-600 bg-opacity-20 text-yellow-400' },
-                        { text: 'Financial Issue', class: 'status-badge bg-gray-600 bg-opacity-20 text-gray-400' }
-                    ]
-                },
-                {
-                    timestamp: 'Feb 16, 10:30 AM',
-                    agent: 'Agent Mike',
-                    content: 'Customer made partial payment of ₦15,000. Promised to clear balance by end of month.',
-                    borderClass: 'bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-green-400',
-                    badges: [
-                        { text: 'Partial Paid', class: 'status-badge bg-green-600 bg-opacity-20 text-green-400' },
-                        { text: 'Follow Up', class: 'status-badge bg-blue-600 bg-opacity-20 text-blue-400' }
-                    ]
-                }
-            ],
-            outstandingDetails: {
-                outstandingAmount: 45000,
-                dueAmount: 45000,
-                penaltyFee: 12800,
-                totalDue: 57800,
-                paidAmount: 0
-            },
-            paymentInfo: {
-                appLink: 'https://skyloan.app/pay/NG456789',
-                bankName: 'PALMPAY',
-                paymentLink: 'https://palmpay.com/pay/VIR123456789'
-            },
-            employmentInfo: {
-                salaryRange: '₦80,000 - ₦120,000',
-                payFrequency: 'Monthly',
-                paymentDate: '25th of every month',
-                email: 'grace.johnson@email.com'
-            },
-            uploadedFile: null,
-            collectionHistory: [
-                {
-                    timestamp: 'Today, 3:40 PM',
-                    action: 'Call Attempt',
-                    result: 'Result: No Answer',
-                    borderClass: 'border-l-2 border-yellow-400 pl-3'
-                },
-                {
-                    timestamp: 'Yesterday, 10:12 AM',
-                    action: 'SMS Reminder Sent',
-                    result: 'Message: Payment reminder',
-                    borderClass: 'border-l-2 border-blue-400 pl-3'
-                },
-                {
-                    timestamp: 'Feb 15, 4:25 PM',
-                    action: 'Call with Agent Peter',
-                    result: 'PTP: Feb 19 - STATUS: BROKEN',
-                    borderClass: 'border-l-2 border-red-400 pl-3'
-                }
-            ],
-            scriptCategories: [
-                { key: 'initial', label: 'Initial Contact' },
-                { key: 'ptp', label: 'PTP Follow Up' },
-                { key: 'overdue', label: 'Overdue' },
-                { key: 'negotiation', label: 'Negotiation' },
-                { key: 'escalation', label: 'Escalation' }
-            ],
-            selectedScriptCategory: 'initial',
-            scripts: [
-                {
-                    key: 'initial',
-                    title: 'Opening Statement',
-                    category: 'Category: Initial Contact | Style: Professional',
-                    content: 'Good morning/afternoon, my name is [Agent Name] from SkyLend Pro. I\'m calling regarding your loan with account number [Account Number]. Your current outstanding balance is ₦[Amount] and you are [DPD] days past due. Can you help me understand what\'s happening?',
-                    borderClass: 'script-item bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-blue-400',
-                    tags: [
-                        { text: 'Professional', class: 'status-badge bg-blue-600 bg-opacity-20 text-blue-400' },
-                        { text: 'Standard', class: 'status-badge bg-gray-600 bg-opacity-20 text-gray-400' }
-                    ]
-                },
-                {
-                    key: 'ptp',
-                    title: 'PTP Follow Up',
-                    category: 'Category: PTP Follow Up | Style: Friendly',
-                    content: 'Hi [Customer Name], I\'m following up on your promise to pay yesterday. Did you get a chance to make the payment as discussed?',
-                    borderClass: 'script-item bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-yellow-400',
-                    tags: [
-                        { text: 'Friendly', class: 'status-badge bg-yellow-600 bg-opacity-20 text-yellow-400' },
-                        { text: 'Follow Up', class: 'status-badge bg-blue-600 bg-opacity-20 text-blue-400' }
-                    ]
-                }
+                { key: 'all', label: 'All' },
+                { key: 'high', label: 'High Risk' },
+                { key: 'ptpToday', label: 'PTP Today' },
+                { key: 'broken', label: 'Broken PTP' }
             ]
         };
     },
     computed: {
-        priorityQueue() {
-            return this.queueData
-                .filter(item => item.risk === 'high' || item.aiPriority)
-                .sort((a, b) => {
-                    if (a.aiScore && b.aiScore) {
-                        return b.aiScore - a.aiScore;
-                    }
-                    return b.amount - a.amount;
-                })
-                .slice(0, 5);
+        priorityQueueList() {
+            return this.MOCK_QUEUE.slice()
+                .sort((a, b) => b.dpd - a.dpd)
+                .slice(0, 3);
         },
-        filteredQueueData() {
-            let filtered = [...this.queueData];
-            
-            // Apply filter
-            if (this.currentFilter === 'today') {
-                filtered = filtered.filter(item => 
-                    item.risk === 'high' || 
-                    (item.ptp === 'valid' && item.dpd <= 7) ||
-                    (item.ptp === 'broken' && item.dpd <= 14)
-                );
-            } else if (this.currentFilter === 'overdue') {
-                filtered = filtered.filter(item => item.dpd >= 60);
-            } else if (this.currentFilter === 'ptp') {
-                filtered = filtered.filter(item => item.ptp === 'valid');
-            } else if (this.currentFilter === 'broken') {
-                filtered = filtered.filter(item => 
-                    item.ptp === 'broken' || item.contactAttempts >= 5
-                );
-            } else if (this.currentFilter === 'new') {
-                filtered = filtered.filter(item => item.dpd <= 7);
-            }
-            
-            // Apply search
-            if (this.searchTerm) {
-                const term = this.searchTerm.toLowerCase();
-                filtered = filtered.filter(item => 
-                    item.name.toLowerCase().includes(term) ||
-                    item.customerId.toLowerCase().includes(term) ||
-                    item.dpd.toString().includes(term)
-                );
-            }
-            
-            // Apply sort
-            filtered.sort((a, b) => {
-                switch(this.currentSort) {
-                    case 'amount':
-                        return b.amount - a.amount;
-                    case 'dpd':
-                        return b.dpd - a.dpd;
-                    case 'contact':
-                        return a.contactAttempts - b.contactAttempts;
-                    case 'risk':
-                        const riskOrder = { 'high': 3, 'medium': 2, 'low': 1 };
-                        return riskOrder[b.risk] - riskOrder[a.risk];
-                    default:
-                        return 0;
-                }
-            });
-            
-            return filtered;
+        displayedQueueItems() {
+            const start = 0;
+            const end = (this.queuePageIndex + 1) * this.pageSize;
+            return this.filteredQueueCache.slice(start, end);
+        },
+        hasMoreItems() {
+            return this.filteredQueueCache.length > (this.queuePageIndex + 1) * this.pageSize;
+        },
+        currentCustomer() {
+            if (!this.currentDetailCustomerId) return null;
+            return this.MOCK_QUEUE.find(x => x.id === this.currentDetailCustomerId);
+        },
+        detailNotes() {
+            if (!this.currentDetailCustomerId) return [];
+            const records = this.recordsByCustomer[this.currentDetailCustomerId] || [];
+            return records.slice().reverse();
         },
         tabIndicatorStyle() {
-            const activeIndex = this.queueTabs.findIndex(tab => tab.key === this.currentFilter);
+            const index = this.queueTabs.findIndex(tab => tab.key === this.currentQueueTab);
             return {
-                width: '20%',
-                left: `${activeIndex * 20}%`
+                width: '25%',
+                left: `${index * 25}%`
             };
+        }
+    },
+    methods: {
+        /**********************
+         * UTILITIES
+         **********************/
+        todayISO,
+        formatNaira,
+        riskLabelClass(risk) {
+            if (risk === 'high') return 'badge-risk-high';
+            if (risk === 'medium') return 'badge-risk-medium';
+            if (risk === 'low') return 'badge-risk-low';
+            return '';
         },
-        filteredScripts() {
-            return this.scripts.filter(script => script.key === this.selectedScriptCategory);
+        ptpLabelClass(status) {
+            if (status === 'valid') return 'badge-ptp-valid';
+            if (status === 'broken') return 'badge-ptp-broken';
+            return '';
+        },
+        priorityClass(dpd) {
+            if (dpd >= 60) return 'priority-high';
+            if (dpd >= 30) return 'priority-medium';
+            return 'priority-low';
+        },
+
+        /**********************
+         * PAGE SWITCH
+         **********************/
+        switchPage(pageKey) {
+            this.currentPageKey = pageKey;
+
+            if (pageKey === 'queue') {
+                this.ensureQueueRendered();
+            }
+
+            if (pageKey === 'dashboard') {
+                // Priority queue is computed, no need to render
+            }
+        },
+        backToQueue() {
+            this.switchPage('queue');
+        },
+
+        /**********************
+         * QUEUE FILTERING
+         **********************/
+        setQueueTab(tabKey) {
+            this.currentQueueTab = tabKey;
+            this.queuePageIndex = 0;
+            this.ensureQueueRendered();
+        },
+        onFilterChanged() {
+            this.queuePageIndex = 0;
+            this.ensureQueueRendered();
+        },
+        ensureQueueRendered() {
+            const search = this.searchQuery.trim().toLowerCase();
+            const risk = this.filterRisk;
+            const ptp = this.filterPTP;
+            const amount = this.filterAmount;
+
+            // 基于当前队列 tab 选择子集
+            let data = this.MOCK_QUEUE.slice();
+            if (this.currentQueueTab === 'high') {
+                data = data.filter(c => c.risk === 'high');
+            } else if (this.currentQueueTab === 'ptpToday') {
+                data = data.filter(c => c.ptpDate === todayISO());
+            } else if (this.currentQueueTab === 'broken') {
+                data = data.filter(c => c.ptpStatus === 'broken');
+            }
+
+            // 搜索
+            if (search) {
+                data = data.filter(c => {
+                    const target = (
+                        c.name +
+                        ' ' +
+                        c.phone +
+                        ' ' +
+                        c.id
+                    ).toLowerCase();
+                    return target.includes(search);
+                });
+            }
+
+            // Risk filter
+            if (risk) {
+                data = data.filter(c => c.risk === risk);
+            }
+
+            // PTP filter
+            if (ptp) {
+                if (ptp === 'none') {
+                    data = data.filter(c => c.ptpStatus === 'none');
+                } else {
+                    data = data.filter(c => c.ptpStatus === ptp);
+                }
+            }
+
+            // Amount filter
+            if (amount) {
+                data = data.filter(c => {
+                    if (amount === 'lt50k') return c.outstanding < 50000;
+                    if (amount === '50-100k')
+                        return c.outstanding >= 50000 && c.outstanding <= 100000;
+                    if (amount === 'gt100k') return c.outstanding > 100000;
+                    return true;
+                });
+            }
+
+            this.filteredQueueCache = data;
+        },
+        loadMoreQueue() {
+            this.queuePageIndex++;
+        },
+        refreshQueue(fromUser) {
+            // TODO: 将这里替换为真实 API 刷新逻辑
+            if (fromUser) {
+                // Show loading state if needed
+                setTimeout(() => {
+                    this.ensureQueueRendered();
+                }, 400);
+            } else {
+                this.ensureQueueRendered();
+            }
+        },
+
+        /**********************
+         * CUSTOMER DETAIL
+         **********************/
+        openCustomerDetail(customerId) {
+            const c = this.MOCK_QUEUE.find(x => x.id === customerId);
+            if (!c) return;
+
+            this.currentDetailCustomerId = customerId;
+            this.switchPage('detail');
+        },
+
+        /**********************
+         * RECORD MODAL
+         **********************/
+        openRecordModal() {
+            if (!this.currentDetailCustomerId) return;
+            this.showRecordModal = true;
+        },
+        hideRecordModal() {
+            this.showRecordModal = false;
+        },
+        closeRecordModal(e) {
+            if (e.target === e.currentTarget) {
+                this.hideRecordModal();
+            }
+        },
+        saveRecord() {
+            if (!this.currentDetailCustomerId) return;
+            const result = this.recordForm.result;
+            const amountVal = this.recordForm.amount;
+            const nextDate = this.recordForm.nextDate;
+            const note = this.recordForm.note.trim();
+
+            if (!result) {
+                alert('Please select a result.');
+                return;
+            }
+
+            const labelMap = {
+                'connected': 'Customer Connected',
+                'no-answer': 'No Answer',
+                'wrong-number': 'Wrong Number',
+                'busy': 'Busy',
+                'ptp-made': 'PTP Made',
+                'payment-received': 'Payment Received',
+                'dispute': 'Customer Disputed',
+                'refusal': 'Refused to Pay'
+            };
+
+            const rec = {
+                result,
+                resultLabel: labelMap[result] || result,
+                amount: amountVal ? Number(amountVal) : null,
+                nextDate: nextDate || null,
+                note,
+                date: new Date().toLocaleString('en-NG', {
+                    hour12: true,
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+
+            if (!this.recordsByCustomer[this.currentDetailCustomerId]) {
+                this.$set(this.recordsByCustomer, this.currentDetailCustomerId, []);
+            }
+            this.recordsByCustomer[this.currentDetailCustomerId].push(rec);
+
+            // reset
+            this.recordForm = {
+                result: '',
+                amount: null,
+                nextDate: '',
+                note: ''
+            };
+
+            this.hideRecordModal();
+            alert('Record saved.');
+        },
+
+        /**********************
+         * AI DEMO
+         **********************/
+        demoAI(text) {
+            this.aiMessages.push(text);
+            this.$nextTick(() => {
+                const box = this.$refs.aiChat;
+                if (box) {
+                    box.scrollTop = box.scrollHeight;
+                }
+            });
+        },
+        sendAIMessage() {
+            const value = this.aiInput.trim();
+            if (!value) return;
+            this.demoAI(value);
+            this.aiInput = '';
+        },
+
+        /**********************
+         * DEMO ACTIONS
+         **********************/
+        demoCall(id) {
+            alert('Mock: calling customer ' + id);
+        },
+        demoWhatsApp(id) {
+            alert('Mock: open WhatsApp chat for ' + id);
         }
     },
     mounted() {
-        this.initializeApp();
+        this.ensureQueueRendered();
+        if (this.autoRefreshTimer) clearInterval(this.autoRefreshTimer);
+        this.autoRefreshTimer = setInterval(() => this.refreshQueue(false), 30000);
     },
-    methods: {
-        initializeApp() {
-            // Initialize app
-        },
-        showPage(page) {
-            if (page !== 'customer-detail') {
-                this.previousPage = this.currentPage;
-            }
-            this.currentPage = page;
-        },
-        sortQueue(sortBy) {
-            this.currentSort = sortBy;
-        },
-        switchQueueTab(tab) {
-            this.currentFilter = tab;
-        },
-        filterQueue() {
-            // Filtering is handled by computed property
-        },
-        togglePerformanceDetails() {
-            this.showPerformanceDetails = !this.showPerformanceDetails;
-        },
-        refreshPriorities() {
-            this.showNotification('Refreshed', 'Priority queue updated');
-        },
-        startSmartWorkflow() {
-            this.showNotification('Smart Workflow', 'Starting AI-recommended workflow...');
-            this.showPage('queue');
-        },
-        startHighValueWorkflow() {
-            this.currentFilter = 'today';
-            this.currentSort = 'amount';
-            this.showPage('queue');
-        },
-        startOverdueWorkflow() {
-            this.currentFilter = 'overdue';
-            this.showPage('queue');
-        },
-        startPTPWorkflow() {
-            this.currentFilter = 'ptp';
-            this.showPage('queue');
-        },
-        startNewCaseWorkflow() {
-            this.currentFilter = 'new';
-            this.showPage('queue');
-        },
-        showCustomerDetail(item) {
-            this.currentCustomer = item;
-            this.currentCaseIndex = this.queueData.findIndex(c => c.id === item.id);
-            this.previousPage = this.currentPage;
-            
-            // Update queue progress
-            const totalCases = this.queueData.length;
-            const queueProgress = `${this.currentCaseIndex + 1} of ${totalCases}`;
-            
-            // Store customer data in localStorage for the details page
-            const customerData = {
-                customer: item,
-                queueProgress: queueProgress
-            };
-            localStorage.setItem('currentCustomerDetail', JSON.stringify(customerData));
-            
-            // Navigate to professional-details page
-            navigateTo('professional-details');
-        },
-        backToPreviousPage() {
-            this.showPage(this.previousPage);
-        },
-        makeCall(customerId) {
-            const customer = this.queueData.find(c => c.customerId === customerId);
-            if (customer) {
-                this.showNotification('Calling', `Calling ${customer.name}...`);
-                // In real app, this would trigger actual call
-            }
-        },
-        sendWhatsApp(customerId, contactType = 'customer') {
-            const customer = this.queueData.find(c => c.customerId === customerId);
-            if (customer) {
-                this.showNotification('WhatsApp', `Opening WhatsApp for ${customer.name}...`);
-                // In real app, this would open WhatsApp
-            }
-        },
-        makeCallFromDetail() {
-            if (this.currentCustomer) {
-                this.makeCall(this.currentCustomer.customerId);
-            }
-        },
-        sendWhatsAppFromDetail() {
-            if (this.currentCustomer) {
-                this.sendWhatsApp(this.currentCustomer.customerId);
-            }
-        },
-        toggleQuickActions() {
-            this.showQuickActionsPanel = !this.showQuickActionsPanel;
-        },
-        closeQuickActions() {
-            this.showQuickActionsPanel = false;
-        },
-        quickCallLastCustomer() {
-            if (this.currentCustomer) {
-                this.makeCall(this.currentCustomer.customerId);
-            }
-            this.closeQuickActions();
-        },
-        quickDialer() {
-            this.showNotification('Dialer', 'Opening dialer...');
-            this.closeQuickActions();
-        },
-        quickWhatsAppTemplate() {
-            this.showNotification('WhatsApp Template', 'Opening WhatsApp templates...');
-            this.closeQuickActions();
-        },
-        quickSMSTemplate() {
-            this.showNotification('SMS Template', 'Opening SMS templates...');
-            this.closeQuickActions();
-        },
-        quickAddNote() {
-            this.showNotification('Quick Note', 'Opening note editor...');
-            this.closeQuickActions();
-        },
-        quickPTP() {
-            this.showNotification('Add PTP', 'Opening PTP form...');
-            this.closeQuickActions();
-        },
-        quickNextCase() {
-            // Move to next case in queue
-            if (this.queueData && this.queueData.length > 0) {
-                this.currentCaseIndex = (this.currentCaseIndex + 1) % this.queueData.length;
-                this.currentCustomer = this.queueData[this.currentCaseIndex];
-                this.showNotification('Next Case', `Switched to ${this.currentCustomer.name}`);
-            }
-            this.closeQuickActions();
-        },
-        quickDashboard() {
-            this.currentPage = 'dashboard';
-            this.closeQuickActions();
-        },
-        sendAIMessage() {
-            if (!this.aiInput.trim()) return;
-            
-            // Add user message
-            this.chatMessages.push({
-                sender: 'user',
-                message: this.aiInput
-            });
-            
-            const userMessage = this.aiInput;
-            this.aiInput = '';
-            
-            // Simulate AI response
-            setTimeout(() => {
-                const responses = [
-                    "Based on the customer's payment history, I recommend a flexible payment plan with 2-3 installments.",
-                    "This customer has a high risk score. Consider offering a settlement at 70% of the total amount.",
-                    "The best time to call this customer is between 6-8 PM based on their answer patterns.",
-                    "I suggest mentioning the legal consequences but maintaining a professional tone."
-                ];
-                const response = responses[Math.floor(Math.random() * responses.length)];
-                this.chatMessages.push({
-                    sender: 'ai',
-                    message: response
-                });
-            }, 1000);
-        },
-        generateScript() {
-            this.showNotification('Script Generated', 'Custom collection script created');
-        },
-        analyzeRisk() {
-            this.showNotification('Risk Analysis', 'Customer risk score: 7.8/10 (High)');
-        },
-        predictPayment() {
-            this.showNotification('Payment Prediction', '82% chance of payment within 7 days');
-        },
-        optimizeSchedule() {
-            this.showNotification('Schedule Optimized', 'Best call times: 6-8 PM, Weekends preferred');
-        },
-        refreshAnalyticsData() {
-            this.refreshing = true;
-            setTimeout(() => {
-                this.refreshing = false;
-                this.showNotification('Data Refreshed', 'Analytics data updated');
-            }, 2000);
-        },
-        exportAnalyticsReport() {
-            this.showNotification('Export Started', 'Generating report...');
-            setTimeout(() => {
-                this.showNotification('Export Complete', 'Report downloaded successfully');
-            }, 3000);
-        },
-        showNotification(title, message) {
-            // Simple notification - in real app, use a proper notification component
-            console.log(`${title}: ${message}`);
-            // You can implement a toast notification here
-        },
-        formatAmount(amount) {
-            return amount.toLocaleString();
-        },
-        getRiskBadgeClass(risk) {
-            const classes = {
-                'high': 'bg-red-600 bg-opacity-20 text-red-400',
-                'medium': 'bg-yellow-600 bg-opacity-20 text-yellow-400',
-                'low': 'bg-green-600 bg-opacity-20 text-green-400'
-            };
-            return classes[risk] || 'bg-gray-600 bg-opacity-20 text-gray-400';
-        },
-        getAmountColorClass(risk) {
-            const classes = {
-                'high': 'text-red-400',
-                'medium': 'text-yellow-400',
-                'low': 'text-green-400'
-            };
-            return classes[risk] || 'text-white';
-        },
-        showAdvancedModule(module) {
-            this.activeAnalyticsModule = module;
-        },
-        openNotifications() {
-            this.showNotification('Notifications', 'Opening notification settings...');
-        },
-        toggleDarkMode() {
-            this.showNotification('Dark Mode', 'Dark mode toggle feature coming soon');
-        },
-        handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                this.showNotification('Logout', 'Logging out...');
-                // In real app, this would handle actual logout
-            }
-        },
-        showAIDetailedInsights() {
-            this.showNotification('AI Insights', 'Opening detailed AI insights...');
-        },
-        selectDateRange(range) {
-            this.selectedDateRange = range;
-            this.refreshAnalyticsData();
-        },
-        toggleMetricsView() {
-            this.showDetailedMetrics = !this.showDetailedMetrics;
-        },
-        showKPIDetails(kpi) {
-            this.showNotification('KPI Details', `Showing details for ${kpi}...`);
-        },
-        changeChartView(view) {
-            this.currentChartView = view;
-            // In real app, this would update chart data based on view
-        },
-        toggleChartType(type) {
-            this.currentChartType = type;
-            // In real app, this would change chart rendering
-        },
-        showDayDetails(day) {
-            this.showNotification('Day Details', `Showing details for ${day}...`);
-        },
-        toggleDPDView() {
-            this.showDPDHeatmap = !this.showDPDHeatmap;
-        },
-        refreshPredictions() {
-            this.showNotification('Predictions', 'Refreshing AI predictions...');
-            this.refreshing = true;
-            setTimeout(() => {
-                this.refreshing = false;
-                this.showNotification('Predictions Updated', 'AI predictions refreshed');
-            }, 2000);
-        },
-        showDetailedRecommendations() {
-            this.showNotification('Action Plan', 'Opening detailed action plan...');
-        },
-        toggleTeamView(view) {
-            this.teamView = view;
-        },
-        // Customer Detail Page Methods
-        sendSMSFromDetail() {
-            if (this.currentCustomer) {
-                this.showNotification('SMS', `Sending SMS to ${this.currentCustomer.name}...`);
-            }
-        },
-        recordPTPFromDetail() {
-            if (this.currentCustomer) {
-                const ptpDate = prompt('Enter PTP date (YYYY-MM-DD):');
-                if (ptpDate) {
-                    this.showNotification('PTP Recorded', `Promise to Pay recorded for ${this.currentCustomer.name} on ${ptpDate}`);
-                }
-            }
-        },
-        escalateCase() {
-            if (this.currentCustomer) {
-                if (confirm(`Are you sure you want to escalate ${this.currentCustomer.name}'s case?`)) {
-                    this.showNotification('Case Escalated', `Case for ${this.currentCustomer.name} has been escalated`);
-                }
-            }
-        },
-        skipToNextCase() {
-            if (this.currentCaseIndex < this.queueData.length - 1) {
-                const nextCase = this.queueData[this.currentCaseIndex + 1];
-                this.showCustomerDetail(nextCase);
-            } else {
-                this.showNotification('No More Cases', 'You have reached the end of the queue');
-            }
-        },
-        showAddContactModal() {
-            this.showNotification('Add Contact', 'Opening add contact modal...');
-        },
-        callEmergencyContact(phone, name) {
-            this.showNotification('Calling', `Calling ${name} at ${phone}...`);
-        },
-        whatsappEmergencyContact(phone, name) {
-            this.showNotification('WhatsApp', `Opening WhatsApp for ${name} at ${phone}...`);
-        },
-        smsEmergencyContact(phone, name) {
-            this.showNotification('SMS', `Sending SMS to ${name} at ${phone}...`);
-        },
-        showQuickNoteModal() {
-            const note = prompt('Enter your note:');
-            if (note) {
-                this.addNote(note);
-            }
-        },
-        addTemplateNote(template) {
-            const templates = {
-                customer_unreachable: 'Customer unreachable after multiple attempts. No response to calls, SMS, or WhatsApp.',
-                payment_dispute: 'Customer disputes the payment amount. Claims to have made partial payment.',
-                financial_hardship: 'Customer experiencing financial hardship. Unable to make full payment at this time.',
-                request_extension: 'Customer requests extension of payment deadline due to unforeseen circumstances.'
-            };
-            const note = templates[template] || '';
-            if (note) {
-                this.addNote(note);
-            }
-        },
-        addNote(content) {
-            const now = new Date();
-            const timestamp = now.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric', 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            this.collectionNotes.unshift({
-                timestamp: timestamp,
-                agent: 'Current Agent',
-                content: content,
-                borderClass: 'bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-cyan-400',
-                badges: []
-            });
-            this.showNotification('Note Added', 'Collection note has been added');
-        },
-        deleteNote(index) {
-            if (confirm('Are you sure you want to delete this note?')) {
-                this.collectionNotes.splice(index, 1);
-                this.showNotification('Note Deleted', 'Collection note has been deleted');
-            }
-        },
-        copyToClipboard(text) {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    this.showNotification('Copied', 'Link copied to clipboard');
-                }).catch(() => {
-                    this.showNotification('Error', 'Failed to copy to clipboard');
-                });
-            } else {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    this.showNotification('Copied', 'Link copied to clipboard');
-                } catch (err) {
-                    this.showNotification('Error', 'Failed to copy to clipboard');
-                }
-                document.body.removeChild(textArea);
-            }
-        },
-        handleScreenshotUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const now = new Date();
-                const time = now.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                this.uploadedFile = {
-                    name: file.name,
-                    time: time,
-                    file: file
-                };
-                this.showNotification('File Selected', `Screenshot ${file.name} selected`);
-            }
-        },
-        removeUpload() {
-            this.uploadedFile = null;
-            const fileInput = this.$refs.whatsappScreenshot;
-            if (fileInput && fileInput.length > 0) {
-                fileInput[0].value = '';
-            } else if (fileInput) {
-                fileInput.value = '';
-            }
-            this.showNotification('File Removed', 'Screenshot removed');
-        },
-        submitDailyReport() {
-            if (!this.uploadedFile) {
-                alert('Please upload a screenshot first');
-                return;
-            }
-            this.showNotification('Submitting', 'Submitting daily report...');
-            setTimeout(() => {
-                this.showNotification('Report Submitted', 'Daily work report submitted successfully');
-                this.uploadedFile = null;
-                const fileInput = this.$refs.whatsappScreenshot;
-                if (fileInput && fileInput.length > 0) {
-                    fileInput[0].value = '';
-                } else if (fileInput) {
-                    fileInput.value = '';
-                }
-            }, 2000);
-        },
-        showAddRecordModal() {
-            const action = prompt('Enter collection action:');
-            if (action) {
-                const now = new Date();
-                const timestamp = now.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric', 
-                    hour: 'numeric', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                this.collectionHistory.unshift({
-                    timestamp: timestamp,
-                    action: action,
-                    result: 'Recorded',
-                    borderClass: 'border-l-2 border-blue-400 pl-3'
-                });
-                this.showNotification('Record Added', 'Collection history record added');
-            }
-        },
-        toggleScriptView() {
-            this.showNotification('Scripts', 'Viewing all collection scripts...');
-        },
-        filterScripts(category) {
-            this.selectedScriptCategory = category;
-        },
-        addCustomScript() {
-            const title = prompt('Enter script title:');
-            if (title) {
-                const content = prompt('Enter script content:');
-                if (content) {
-                    this.scripts.push({
-                        key: 'custom',
-                        title: title,
-                        category: 'Category: Custom | Style: Custom',
-                        content: content,
-                        borderClass: 'script-item bg-gray-800 bg-opacity-50 p-3 rounded-lg border-l-4 border-green-400',
-                        tags: [
-                            { text: 'Custom', class: 'status-badge bg-green-600 bg-opacity-20 text-green-400' }
-                        ]
-                    });
-                    this.showNotification('Script Added', 'Custom script has been added');
-                }
-            }
-        },
-        copyScript(content) {
-            this.copyToClipboard(content);
-            this.showNotification('Script Copied', 'Script copied to clipboard');
-        },
-        playScriptAudio(key) {
-            this.showNotification('Playing', `Playing audio for ${key} script...`);
+    beforeDestroy() {
+        if (this.autoRefreshTimer) {
+            clearInterval(this.autoRefreshTimer);
         }
     }
 };

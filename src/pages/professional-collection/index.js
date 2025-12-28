@@ -4,6 +4,7 @@ import Vue from 'vue';
 // import 'vant/lib/index.css';
 import App from './app/index.vue';
 import 'assets/styles/tailwind.css'
+import 'font-awesome/css/font-awesome.min.css';
 // new Vconsole();
 // 注册Vant组件
 // Vue.use(Button);
